@@ -1,0 +1,22 @@
+{
+  "name": "taco-cat-goat-cheese-pizza",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elvincheng3/taco-cat-goat-cheese-pizza.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elvincheng3/taco-cat-goat-cheese-pizza/issues"
+  },
+  "homepage": "https://github.com/elvincheng3/taco-cat-goat-cheese-pizza#readme",
+  "devDependencies": {
+    "typescript": "^4.6.3"
+  }
+}
