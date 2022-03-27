@@ -1,13 +1,21 @@
 import { CardType } from "./CardType";
-
+ 
 class Util {
-  static shuffleCards(cards): void{
-    for (let i = cards.length - 1; i > 0; i--) {
+  // shuffles an array
+  static shuffle<T>(items: T[]): void {
+    for (let i = items.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      const temp = cards[i];
-      cards[i] = cards[j];
-      cards[j] = temp;
+      const temp = items[i];
+      items[i] = items[j];
+      items[j] = items[i];
     }
+  }
+
+  // performs ormap on an array
+  static ormap<T>(items: T[], pred: (arg: T) => boolean): boolean {
+    return !items.every((item) =>{
+      return !pred(item);
+    })
   }
 }
 

@@ -1,16 +1,20 @@
 import { CardType } from "./modules/CardType";
 import { Player } from "./Player";
 import { Util } from "./modules/Util";
+import { TurnController } from "./TurnController";
+import WebSocket, { WebSocketServer } from 'ws';
 
 class Game {
   numPlayers: number
   centerDeck: CardType[]
   players: Player[]
+  turnController: TurnController
 
   constructor(numPlayers: number) {
     this.numPlayers = numPlayers;
     this.centerDeck = [];
     this.players = this.initializePlayers();
+    this.turnController = new TurnController();
   }
 
   // initializes the players, distributing the cards evenly 
@@ -26,7 +30,7 @@ class Game {
       ...Array<CardType>(3).fill(CardType.Narwhal)];
 
     // shuffle the original cards
-    Util.shuffleCards(originalCards)
+    Util.shuffle(originalCards);
 
     // create the players
     let players = new Array<Player>();
@@ -42,7 +46,38 @@ class Game {
     }
     return players;
   }
+
+  // starts the game 
+  startGame(): void {
+    while (!this.hasWinner()) {
+      // current player flips their top card
+      let newTopCard = this.players[this.turnController.getTurnNumber % this.numPlayers].removeCard();
+      
+      // add the new top card to the deck
+      this.centerDeck.push(newTopCard);
+
+      // if the card matches the current chant, then check for actions, incl. special
+      this.turnController.controlTurn(newTopCard);
+
+      // number
+
+      // manage deck after turn, (give shuffled center deck to loser, clear center deck)
+
+      // move on to the next player
+      this.turnController.nextTurn();
+    }
+    // declare winner
+  }
+
+
+  // is there a winner?
+  hasWinner(): boolean {
+    return Util.ormap(this.players, (player) => {
+      return player.hasWon();
+    });
+  }
 }
 
 let newGame = new Game(4);
 console.log(newGame.players);
+

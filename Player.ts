@@ -18,6 +18,10 @@ class Player {
   removeCard(): CardType {
     return this.deck.pop();
   }
+
+  hasWon(): boolean {
+    return this.deck.length == 0;
+  }
 }
 
 export { Player };

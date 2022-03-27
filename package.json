@@ -18,5 +18,8 @@
   "homepage": "https://github.com/elvincheng3/taco-cat-goat-cheese-pizza#readme",
   "devDependencies": {
     "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "ws": "^8.5.0"
   }
 }
