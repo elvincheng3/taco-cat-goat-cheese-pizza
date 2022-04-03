@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
 class Player {
-    constructor() {
+    constructor(id) {
         this.deck = new Array();
+        this.id = id;
     }
     addCard(card) {
         this.deck.push(card);
@@ -13,6 +14,9 @@ class Player {
     }
     removeCard() {
         return this.deck.pop();
+    }
+    hasWon() {
+        return this.deck.length == 0;
     }
 }
 exports.Player = Player;

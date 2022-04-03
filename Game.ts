@@ -4,39 +4,19 @@ import { Util } from "./modules/Util";
 import { TurnController } from "./TurnController";
 import WebSocket, { WebSocketServer } from 'ws';
 import { Server } from "socket.io";
-
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-}
-
-interface ClientToServerEvents {
-  hello: () => void;
-}
-
-interface InterServerEvents {
-  ping: () => void;
-}
-
-interface SocketData {
-  name: string;
-  age: number;
-}
+import { GameServer } from "./GameServer";
 
 class Game {
   numPlayers: number
   centerDeck: CardType[]
   players: Player[]
-  io: Server
   turnController: TurnController
 
-  constructor(numPlayers: number) {
+  constructor(numPlayers: number, io: Server) {
     this.numPlayers = numPlayers;
     this.centerDeck = [];
     this.players = this.initializePlayers();
-    this.io = new Server(3000);
-    this.turnController = new TurnController(this.io, this.numPlayers);
+    this.turnController = new TurnController(io, this.numPlayers);
   }
 
   // initializes the players, distributing the cards evenly 
@@ -99,6 +79,8 @@ class Game {
   }
 }
 
-let newGame = new Game(4);
-console.log(newGame.players);
+let server = new GameServer();
+let newGame = new Game(4, server.io);
+// console.log(newGame.players);
+console.log(server.newRoom());
 
