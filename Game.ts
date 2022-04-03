@@ -3,18 +3,40 @@ import { Player } from "./Player";
 import { Util } from "./modules/Util";
 import { TurnController } from "./TurnController";
 import WebSocket, { WebSocketServer } from 'ws';
+import { Server } from "socket.io";
+
+interface ServerToClientEvents {
+  noArg: () => void;
+  basicEmit: (a: number, b: string, c: Buffer) => void;
+  withAck: (d: string, callback: (e: number) => void) => void;
+}
+
+interface ClientToServerEvents {
+  hello: () => void;
+}
+
+interface InterServerEvents {
+  ping: () => void;
+}
+
+interface SocketData {
+  name: string;
+  age: number;
+}
 
 class Game {
   numPlayers: number
   centerDeck: CardType[]
   players: Player[]
+  io: Server
   turnController: TurnController
 
   constructor(numPlayers: number) {
     this.numPlayers = numPlayers;
     this.centerDeck = [];
     this.players = this.initializePlayers();
-    this.turnController = new TurnController();
+    this.io = new Server(3000);
+    this.turnController = new TurnController(this.io, this.numPlayers);
   }
 
   // initializes the players, distributing the cards evenly 
@@ -35,7 +57,7 @@ class Game {
     // create the players
     let players = new Array<Player>();
     for (let i = 0; i < this.numPlayers; i++) {
-      players.push(new Player());
+      players.push(new Player(i));
     }
 
     // deal the cards to the players
@@ -68,7 +90,6 @@ class Game {
     }
     // declare winner
   }
-
 
   // is there a winner?
   hasWinner(): boolean {

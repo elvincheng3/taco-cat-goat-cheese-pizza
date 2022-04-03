@@ -1,3 +1,4 @@
+import { Server } from "socket.io";
 import { CardType } from "./modules/CardType";
 import { Util } from "./modules/Util";
 
@@ -5,9 +6,22 @@ class TurnController {
   static CHANT: Array<CardType> = [CardType.Taco, CardType.Cat, CardType.Goat, CardType.Cheese, CardType.Pizza];
   static SPECIAL: Array<CardType> = [CardType.Gorilla, CardType.Narwhal, CardType.Groundhog];
   turnNumber: number
+  waitingForSlap: boolean
+  numPlayers: number
+  slapOrder = []
 
-  constructor() {
+  constructor(io: Server, numPlayers: number) {
     this.turnNumber = 0;
+    this.waitingForSlap = false;
+    this.numPlayers = numPlayers;
+    io.on("slap", (id: number) => {
+      if (this.waitingForSlap && !this.slapOrder.includes(id)) {
+        this.slapOrder.push(id);
+        if (this.slapOrder.length >= this.numPlayers) {
+          this.waitingForSlap = false;
+        }
+      }
+    })
   }
 
   get getTurnNumber(): number {
@@ -45,7 +59,14 @@ class TurnController {
 
     // perform current chant card action
     if (this.sameCard(this.currentChant(), flippedCard)) {
-
+      this.waitingForSlap = true;
+      // wait for all slaps
+      Util.sleepUntil(() => {return !this.waitingForSlap})
+      .then(() => {
+        let lastPlayer = this.slapOrder.pop();
+        this.slapOrder = [];
+        return lastPlayer;
+      })
     }
     return -1;
   }

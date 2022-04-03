@@ -2,9 +2,11 @@ import { CardType } from "./modules/CardType";
 
 class Player {
   deck: CardType[];
+  id: number
 
-  constructor() {
+  constructor(id: number) {
     this.deck = new Array<CardType>();
+    this.id = id;
   }
 
   addCard(card: CardType): void {

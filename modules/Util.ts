@@ -17,6 +17,18 @@ class Util {
       return !pred(item);
     })
   }
+
+  // sleepUntil, sourced from online
+  static sleepUntil = async (fn: () => boolean) => {
+    return new Promise<void>((resolve, reject) => {
+      const wait = setInterval(function() {
+        if (fn()) {
+          clearInterval(wait);
+          resolve();
+        }
+      }, 20);
+    });
+  }
 }
 
 export { Util };
